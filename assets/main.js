@@ -102,7 +102,8 @@
       p.textContent = t.text;
       var a1 = d.createElement('a');
       a1.className = 'btn';
-      a1.href = '/apply/';
+      var base = d.querySelector('.sticky-cta');
+      a1.href = base ? base.getAttribute('href') : 'apply/';
       a1.textContent = 'Apply now';
       out.appendChild(kick);
       out.appendChild(h);

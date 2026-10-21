@@ -225,7 +225,24 @@ def quiz_block():
 </form>"""
 
 
+import re
+
+
+def relativize(content, depth):
+    prefix = "../" * depth
+
+    def fix(m):
+        attr, url = m.group(1), m.group(2)
+        if url == "/":
+            return f'{attr}="{prefix or "./"}"'
+        return f'{attr}="{prefix}{url[1:]}"'
+
+    return re.sub(r'(href|src)="(/[^"]*)"', fix, content)
+
+
 def write(path, content):
+    depth = len([p for p in path.strip("/").split("/") if p])
+    content = relativize(content, depth)
     full = os.path.join(ROOT, path.strip("/"), "index.html") if path != "/" else os.path.join(ROOT, "index.html")
     os.makedirs(os.path.dirname(full), exist_ok=True)
     with open(full, "w", encoding="utf-8") as f:
